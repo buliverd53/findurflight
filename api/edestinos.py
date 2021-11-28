@@ -45,16 +45,16 @@ def run_edestinos(driver):
         time.sleep(0.1)
         driver.execute_script("window.scrollTo(0, 0)")
     
-    for i in range(10):
+    for i in range(60):
         time.sleep(0.1)
         soup = BeautifulSoup(driver.page_source, 'html.parser')
         progress_bar = soup.find_all('div',{'class':'header-element ng-star-inserted'})
-        if progress_bar==0:
+        if len(progress_bar)==0:
             break
 
     try:                                           
         show_flt_source = driver.find_elements_by_xpath("//span[@class='btn function ghost ng-star-inserted']")
-        for count_show,flt_source in enumerate(show_flt_source):
+        for flt_source in show_flt_source:
             flt_source.click()
     except Exception as e:
         print(e)
@@ -104,7 +104,6 @@ def run_edestinos(driver):
 
     print("Voos cadastrados no sistema!")
 
-
 def main():
     driver = get_driver()
     driver.get(edestinos)
@@ -128,4 +127,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
