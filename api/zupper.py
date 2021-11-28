@@ -11,7 +11,8 @@ site = 'zupper'
 # flt_od = 'CGHSDU' #origem_destino
 flt_od = 'VCPCNF' #origem_destino
 flt_date  = str(date.today() + timedelta(days=int(14))) #Dias de Antecedencia do voo / data_ida
-zupper = "https://www.zupper.com.br/resultados?type=oneWay&adultQty=1&childrenQty=0&infantQty=0&slices=%5B%7B%22originAirport%22:%22"+flt_od[:3]+"%22,%22departureDate%22:%22"+flt_date+"%22,%22destinationAirport%22:%22"+flt_od[3:]+"%22%7D%5D"
+
+zupper = f"https://www.zupper.com.br/resultados?type=oneWay&adultQty=1&childrenQty=0&infantQty=0&slices=%5B%7B%22originAirport%22:%22{flt_od[:3]}%22,%22departureDate%22:%22{flt_date}%22,%22destinationAirport%22:%22{flt_od[3:]}%22%7D%5D"
 
 def save_on_mongo(flight_json):
     try:
@@ -53,6 +54,7 @@ def run_zupper(driver):
             arv_time = inner_containers[d].find("div",{"class":"arrival-wrapper"}).get_text().replace("Chegada","")[1:6]
             stops = inner_containers[d].find("div",{"class":"stops-wrapper"}).get_text().replace("Voo Direto","Direto")
             fare = contaniers[count].find("div",{"class":"price-info"}).findAll("p")[0].get_text().replace("Tarifa por Adulto R$","").replace(".","").replace(",",".").replace(u'\xa0', u' ')
+            
             save_on_mongo({
                 'cia': cia,
                 'origin': flt_od[:3],
@@ -61,9 +63,12 @@ def run_zupper(driver):
                 'departure_time': dep_time,
                 'arrive_time': arv_time,
                 'stop_by': stops,
-                'price': fare
+                'price': fare #,
+                #'site': 'decolar'
+                #'crawlertime':  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                #'bag': bags
             })
-
+            
     print("Voos cadastrados no sistema!")
 def main():
     driver = get_driver()

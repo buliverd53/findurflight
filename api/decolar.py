@@ -6,22 +6,22 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-# from mongo_client import get_client
+from mongo_client import get_client
 
 site = 'decolar' 
-flt_od = 'VCPCNF' #origem_destino
+flt_od = 'CGHSDU' #origem_destino
 flt_date  = str(date.today() + timedelta(days=int(14))) #Dias de Antecedencia do voo / data_ida
 
-decolar = 'https://www.decolar.com/shop/flights/results/oneway/'+ flt_od[:3].upper()+'/'+flt_od[-3:].upper()+'/'+flt_date+'/1/0/0/NA/NA/NA/NA/?from=SB&di=1-0'
+decolar = f'https://www.decolar.com/shop/flights/results/oneway/{flt_od[:3].upper()}/{flt_od[-3:].upper()}/{flt_date}/1/0/0/NA/NA/NA/NA/?from=SB&di=1-0'
 
-# def save_on_mongo(flight_json):
-#     try:
-#         for flight in flight_json['flights']:
-#             mongo_client = get_client()
-#             flights_collection = mongo_client.flights
-#             flights_collection.insert_one(flight)
-#     except Exception as e:
-#         print(e)
+def save_on_mongo(flight_json):
+    try:
+        for flight in flight_json['flights']:
+            mongo_client = get_client()
+            flights_collection = mongo_client.flights
+            flights_collection.insert_one(flight)
+    except Exception as e:
+        print(e)
 
 def get_driver():
     options = Options()
@@ -32,21 +32,22 @@ def get_driver():
     options.add_experimental_option('useAutomationExtension', False)
     options.add_argument("--disable-blink-features=AutomationControlled")
 
-    driver = webdriver.Chrome(chrome_options=options, executable_path="/Users/Luiz Eduardo/Documents/Python/chromedriver")
+    driver = webdriver.Chrome(chrome_options=options, executable_path="chromedriver")
 
     return driver
 
 def run_decolar(driver):
+
     for a in range(4):
+        if a == 0: driver.maximize_window()
         driver.execute_script("window.scrollTo(0, 120000)")
         time.sleep(0.1)
         driver.execute_script("window.scrollTo(0, 0)")
 
     try:                                           
         more_flights = driver.find_elements_by_xpath("//button[@class='eva-3-btn -md -link button-show-itineraries']")
-        for i,show in enumerate(more_flights):
-            more_flights[i].click()
-            break
+        for more_flight in more_flights:
+            more_flight.click()
     except:
         pass
 
@@ -73,19 +74,19 @@ def run_decolar(driver):
 
             print(cia,' ',flt_od,' ',flt_date,' ',dep_time,' ',arv_time,' ',stops,' ',fare,' ',site,' ',bags,' ',datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-            # save_on_mongo({
-            #     'cia': cia,
-            #     'origin': flt_od[:3],
-            #     'destiny': flt_od[3:],
-            #     'flight_date': flt_date,
-            #     'departure_time': dep_time,
-            #     'arrive_time': arv_time,
-            #     'stop_by': stops,
-            #     'price': fare #,
-            #     #'site': 'decolar'
-            #     #'crawlertime':  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            #     #'bag': bags
-            # })
+            save_on_mongo({
+                'cia': cia,
+                'origin': flt_od[:3],
+                'destiny': flt_od[3:],
+                'flight_date': flt_date,
+                'departure_time': dep_time,
+                'arrive_time': arv_time,
+                'stop_by': stops,
+                'price': fare #,
+                #'site': 'decolar'
+                #'crawlertime':  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                #'bag': bags
+            })
             
     print("Voos cadastrados no sistema!")
 
@@ -95,15 +96,14 @@ def main():
     driver.get(decolar)
     driver.maximize_window()
     attempts = 0
-    while attempts < 10 :
+    while attempts < 20 :
         try:
             driver.find_element_by_class_name("main-fare-big")
             run_decolar(driver)
             break
         except:
             attempts += 1
-            time.sleep(0.5)
-            print(attempts)
+            time.sleep(0.1)
 
     if attempts == 10: 
         print('nothing done, good bye!')

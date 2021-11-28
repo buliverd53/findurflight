@@ -15,14 +15,14 @@ flt_date  = str(date.today() + timedelta(days=int(14))) #Dias de Antecedencia do
 
 edestinos = f'https://www.edestinos.com.br/flights/select/oneway/ap/{flt_od[:3].lower()}/ap/{flt_od[-3:].lower()}?departureDate={flt_date}&pa=1&py=0&pc=0&pi=0&sc=economy'
 
-# def save_on_mongo(flight_json):
-#     try:
-#         for flight in flight_json['flights']:
-#             mongo_client = get_client()
-#             flights_collection = mongo_client.flights
-#             flights_collection.insert_one(flight)
-#     except Exception as e:
-#         print(e)
+def save_on_mongo(flight_json):
+    try:
+        for flight in flight_json['flights']:
+            mongo_client = get_client()
+            flights_collection = mongo_client.flights
+            flights_collection.insert_one(flight)
+    except Exception as e:
+        print(e)
 
 def get_driver():
     options = Options()
@@ -33,7 +33,7 @@ def get_driver():
     options.add_experimental_option('useAutomationExtension', False)
     options.add_argument("--disable-blink-features=AutomationControlled")
 
-    driver = webdriver.Chrome(chrome_options=options, executable_path="/Users/Luiz Eduardo/Documents/Python/chromedriver")
+    driver = webdriver.Chrome(chrome_options=options, executable_path="chromedriver")
 
     return driver
 
@@ -88,19 +88,19 @@ def run_edestinos(driver):
 
             print(cia,' ',flt_od,' ',flt_date,' ',dep_time,' ',arv_time,' ',stops,' ',fare,' ',site,' ',bag,' ',datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-            # save_on_mongo({
-            #     'cia': cia,
-            #     'origin': flt_od[:3],
-            #     'destiny': flt_od[3:],
-            #     'flight_date': flt_date,
-            #     'departure_time': dep_time,
-            #     'arrive_time': arv_time,
-            #     'stop_by': stops,
-            #     'price': fare #,
-            #     #'site': 'decolar'
-            #     #'crawlertime':  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            #     #'bag': bags
-            # })
+            save_on_mongo({
+                'cia': cia,
+                'origin': flt_od[:3],
+                'destiny': flt_od[3:],
+                'flight_date': flt_date,
+                'departure_time': dep_time,
+                'arrive_time': arv_time,
+                'stop_by': stops,
+                'price': fare #,
+                #'site': 'decolar'
+                #'crawlertime':  datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                #'bag': bags
+            })
 
     print("Voos cadastrados no sistema!")
 
