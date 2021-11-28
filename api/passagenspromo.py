@@ -1,35 +1,17 @@
-
-
 import time
 import json
-from datetime import date,timedelta,datetime
+from datetime import date, timedelta, datetime
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-
+from chromedrive import get_driver
+from mongo_client import get_client
 
 site = 'passagenspromo' 
 flt_od = 'CGHSDU' #origem_destino
 flt_date_date  = date.today() + timedelta(days=int(14)) #Dias de Antecedencia do voo / data_ida
 flt_date = str(flt_date_date)
-
 passagenspromo = f"https://www.passagenspromo.com.br/air/search/{flt_od.upper()}{flt_date_date.strftime('%y%m%d')}/1/0/0/Y/"
 
-def get_driver():
-    options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option('useAutomationExtension', False)
-    options.add_argument("--disable-blink-features=AutomationControlled")
-
-    driver = webdriver.Chrome(chrome_options=options, executable_path="/Users/Luiz Eduardo/Documents/Python/chromedriver")
-
-    return driver
-    
 def run_passagenspromo(driver):
-
     for loading in range(60):
         time.sleep(0.1)
         soup = BeautifulSoup(driver.page_source, 'html.parser')
