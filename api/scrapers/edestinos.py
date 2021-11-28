@@ -3,7 +3,6 @@ import json
 from datetime import date, timedelta, datetime
 from bs4 import BeautifulSoup
 from chromedrive import get_driver
-from mongo_client import get_client
 
 site = 'edestinos' 
 flt_od = 'CGHSDU'
@@ -72,7 +71,7 @@ def run_edestinos(driver):
                     'stop_by': stops,
                     'price': fare,
                     'site': site,
-                    'crawlertime': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    'crawlertime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'bag': bags
                 }
             )
@@ -99,7 +98,3 @@ def main():
     else:
         print('everything done, good bye!')
         driver.close()
-
-
-if __name__ == "__main__":
-    main()

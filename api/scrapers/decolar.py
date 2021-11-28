@@ -56,7 +56,7 @@ def run_decolar(driver):
                     'departure_time': dep_time,
                     'arrive_time': arv_time,
                     'stop_by': stops,
-                    'price': fare #
+                    'price': fare,
                     'site': site,
                     'crawlertime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'bag': bags
@@ -85,6 +85,3 @@ def main():
     else:
         print('everything done, good bye!')
         driver.close()
-
-if __name__ == "__main__":
-    main()

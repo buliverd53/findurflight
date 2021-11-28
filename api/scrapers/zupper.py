@@ -3,7 +3,7 @@ import json
 from datetime import date, timedelta
 from bs4 import BeautifulSoup
 from chromedrive import get_driver
-from mongo_client import get_client
+from mongo_client import save_data, get_data
 
 site = 'zupper'
 flt_od = 'VCPCNF' #origem_destino
@@ -47,6 +47,9 @@ def run_zupper(driver):
 
     print("Voos cadastrados no sistema!")
 
+def get_flights():
+    data = get_data('flights')
+    return { 'zupper-flights': data }
 
 def main():
     driver = get_driver()
@@ -67,7 +70,3 @@ def main():
     else:
         print('everything done, good bye!')
         driver.close()
-
-
-if __name__ == "__main__":
-    main()

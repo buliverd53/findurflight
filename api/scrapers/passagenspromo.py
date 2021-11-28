@@ -3,7 +3,6 @@ import json
 from datetime import date, timedelta, datetime
 from bs4 import BeautifulSoup
 from chromedrive import get_driver
-from mongo_client import get_client
 
 site = 'passagenspromo' 
 flt_od = 'CGHSDU' #origem_destino
@@ -88,7 +87,3 @@ def main():
     else:
         print('everything done, good bye!')
         driver.close()
-
-if __name__ == "__main__":
-    main()
-
