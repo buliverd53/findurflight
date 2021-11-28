@@ -48,9 +48,24 @@ def run_passagenspromo(driver):
                 bag = "Sem bagagem"
             elif ((bag_raw).strip()) == 'vg':
                 bag = "Com bagagem"
-            
-            print(cia,' ',flt_od,' ',flt_date,' ',dep_time,' ',arv_time,' ',stops,' ',fare,' ',site,' ',bag,' ',datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
+            save_data(
+                site,
+                {
+                    'cia': cia,
+                    'origin': flt_od[:3],
+                    'destiny': flt_od[3:],
+                    'flight_date': flt_date,
+                    'departure_time': dep_time,
+                    'arrive_time': arv_time,
+                    'stop_by': stops,
+                    'price': fare,
+                    'site': site,
+                    'crawlertime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'bag': bags
+                }
+            )
+        
     print("Voos cadastrados no sistema!")
 
 def main():

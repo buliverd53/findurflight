@@ -7,20 +7,21 @@ from chromedrive import get_driver
 from mongo_client import save_data
 
 site = 'decolar' 
-flt_od = 'VCPCNF'
-flt_date  = str(date.today() + timedelta(days=int(14)))
-decolar = 'https://www.decolar.com/shop/flights/results/oneway/'+ flt_od[:3].upper()+'/'+flt_od[-3:].upper()+'/'+flt_date+'/1/0/0/NA/NA/NA/NA/?from=SB&di=1-0'
+flt_od = 'CGHSDU' #origem_destino
+flt_date  = str(date.today() + timedelta(days=int(14))) #Dias de Antecedencia do voo / data_ida
+decolar = f'https://www.decolar.com/shop/flights/results/oneway/{flt_od[:3].upper()}/{flt_od[-3:].upper()}/{flt_date}/1/0/0/NA/NA/NA/NA/?from=SB&di=1-0'
 
 def run_decolar(driver):
     try:
         for a in range(4):
+            if a == 0: driver.maximize_window()
             driver.execute_script("window.scrollTo(0, 120000)")
             time.sleep(0.1)
             driver.execute_script("window.scrollTo(0, 0)")
+
         more_flights = driver.find_elements_by_xpath("//button[@class='eva-3-btn -md -link button-show-itineraries']")
-        for i,show in enumerate(more_flights):
-            more_flights[i].click()
-            break
+        for more_flight in more_flights:
+            more_flight.click()
     except:
         pass
 
@@ -44,7 +45,6 @@ def run_decolar(driver):
                 bags = "Sem bagagem"
             elif (bags) == '-INCLUDED':
                 bags = "Com bagagem"
-
 
             save_data(
                 site,
@@ -71,15 +71,14 @@ def main():
     driver.get(decolar)
     driver.maximize_window()
     attempts = 0
-    while attempts < 10 :
+    while attempts < 20 :
         try:
             driver.find_element_by_class_name("main-fare-big")
             run_decolar(driver)
             break
         except:
             attempts += 1
-            time.sleep(0.5)
-            print(attempts)
+            time.sleep(0.1)
 
     if attempts == 10: 
         print('nothing done, good bye!')

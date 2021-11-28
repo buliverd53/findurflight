@@ -60,7 +60,7 @@ def run_edestinos(driver):
                 else:
                     bag = "Com bagagem"
 
-            save_on_mongo(
+            save_data(
                 site,
                 {
                     'cia': cia,
