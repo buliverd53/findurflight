@@ -1,5 +1,7 @@
+#ignore warnings
 import warnings
 warnings.filterwarnings("ignore")
+
 import time
 import atexit
 from flask import Flask, jsonify
@@ -15,10 +17,10 @@ from scrapers.passagenspromo import main as passagenspromo_web_scraper
 from scrapers.zupper import main as zupper_web_scraper
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=decolar_web_scraper, trigger="interval", seconds=15000)
-scheduler.add_job(func=edestino_web_scraper, trigger="interval", seconds=15000)
-scheduler.add_job(func=passagenspromo_web_scraper, trigger="interval", seconds=15000)
-scheduler.add_job(func=zupper_web_scraper, trigger="interval", seconds=15000)
+# scheduler.add_job(func=decolar_web_scraper, trigger="interval", seconds=15)
+# scheduler.add_job(func=edestino_web_scraper, trigger="interval", seconds=15)
+# scheduler.add_job(func=passagenspromo_web_scraper, trigger="interval", seconds=15)
+scheduler.add_job(func=zupper_web_scraper, trigger="interval", seconds=1)
 scheduler.start()
 
 atexit.register(lambda: scheduler.shutdown())

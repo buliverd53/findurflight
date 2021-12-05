@@ -79,6 +79,11 @@ def run_edestinos(driver):
     print("Voos cadastrados no sistema!")
 
 
+def get_flights():
+    data = get_data(site)
+    return { site: data }
+
+
 def main():
     driver = get_driver()
     driver.get(edestinos)
@@ -98,3 +103,6 @@ def main():
     else:
         print('everything done, good bye!')
         driver.close()
+
+if __name__ =='__main__':
+    main()

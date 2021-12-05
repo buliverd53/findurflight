@@ -9,7 +9,7 @@ def save_data(collection_name, flight_json):
     try:
         client = MongoClient(url)
         client_collection = client[collection_name]
-        for flight in flight_json['flights']:
+        for flight in flight_json:
             client_collection.insert_one(flight)
     except Exception as e:
         print(e)

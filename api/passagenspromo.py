@@ -67,6 +67,12 @@ def run_passagenspromo(driver):
         
     print("Voos cadastrados no sistema!")
 
+
+def get_flights():
+    data = get_data(site)
+    return { site: data }
+
+
 def main():
     driver = get_driver()
     driver.get(passagenspromo)
